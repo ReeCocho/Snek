@@ -9,6 +9,11 @@ namespace snk
 
 	void Snek::pickYummySpot()
 	{
+		// Stop the game if there is no place to put a yummy.
+		if (m_snek.size() == m_nodes.size() * m_nodes[0].size())
+			std::exit(0);
+
+		// Loop until we find a place to put a yummy
 		while (true)
 		{
 			size_t x = static_cast<size_t>(rand() % m_nodes.size());
@@ -57,7 +62,7 @@ namespace snk
 			float x = Engine::get()->getInput()->getAxis("Horizontal");
 			float y = Engine::get()->getInput()->getAxis("Vertical");
 
-			if (m_movement.y != -y && m_movement.x != -x)
+			if (m_snek.size() < 2 || m_snek[0] + glm::vec2(x, y) != m_snek[1])
 			{
 				if (y != 0)
 					m_movement = { 0, y };
@@ -82,14 +87,14 @@ namespace snk
 				std::exit(0);
 
 			// Stop if we run into ourself
-			if (isSnekSpot(newSnekPos.x, newSnekPos.y))
+			if (isSnekSpot(static_cast<size_t>(newSnekPos.x), static_cast<size_t>(newSnekPos.y)))
 				std::exit(0);
 
 			// Insert snek head
 			m_snek.insert(m_snek.begin(), newSnekPos);
 
 			// Eat a yummy
-			if (m_nodes[newSnekPos.x][newSnekPos.y].yummy)
+			if (m_nodes[static_cast<size_t>(newSnekPos.x)][static_cast<size_t>(newSnekPos.y)].yummy)
 			{
 				m_nodes[newSnekPos.x][newSnekPos.y].yummy = false;
 				pickYummySpot();
