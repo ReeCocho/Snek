@@ -65,7 +65,7 @@ int main()
 			mesh = std::make_unique<snk::Mesh>(indices, vertices, uvs);
 		}
 
-		// Sprites
+#ifndef NDEBUG
 		auto box = std::make_unique<snk::Sprite>("../../src/Sprites/Box.png", snk::TextureFiltering::Linear, snk::TextureWrap::Clamp);
 		auto circle = std::make_unique<snk::Sprite>("../../src/Sprites/Circle.png", snk::TextureFiltering::Linear, snk::TextureWrap::Clamp);
 
@@ -76,6 +76,18 @@ int main()
 			std::string fSource = snk::readTextFile("../../src/Shaders/standard.frag");
 			shader = std::make_unique<snk::Shader>(vSource, fSource);
 		}
+#else
+		auto box = std::make_unique<snk::Sprite>("./Sprites/Box.png", snk::TextureFiltering::Linear, snk::TextureWrap::Clamp);
+		auto circle = std::make_unique<snk::Sprite>("./Sprites/Circle.png", snk::TextureFiltering::Linear, snk::TextureWrap::Clamp);
+
+		// Shaders
+		std::unique_ptr<snk::Shader> shader;
+		{
+			std::string vSource = snk::readTextFile("./Shaders/standard.vert");
+			std::string fSource = snk::readTextFile("./Shaders/standard.frag");
+			shader = std::make_unique<snk::Shader>(vSource, fSource);
+		}
+#endif
 
 		// Materials
 		auto empty_mat = std::make_unique<snk::Material>();
